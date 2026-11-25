@@ -1,0 +1,379 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TalentScope | Job Market Intelligence</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <h2 class="logo">Talent<span>Scope.</span></h2>
+
+        <p class="menu-label">MAIN MENU</p>
+                <nav id="sidebarNav">
+            <a href="#dashboardTop" class="nav-link active">Dashboard</a>
+            <a href="#skillsSection" class="nav-link">Skill Analysis</a>
+            <a href="#rolesSection" class="nav-link">Job Roles</a>
+            <a href="#advancedSection" class="nav-link">Salary Insights</a>
+            <a href="#trendsSection" class="nav-link">Employment Trends</a>
+            <a href="#mlSection" class="nav-link">ML Insights</a>
+            <a href="#recommenderSection" class="nav-link">Job Recommender</a>
+        </nav>
+
+
+        <div class="sidebar-bottom">
+            <p>JOB MARKET INTELLIGENCE</p>
+            <small>Powered by Data Analytics</small>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+                <header class="topbar" id="dashboardTop">
+            <div>
+                <h1>Job Market Dashboard</h1>
+                <p>Understand the market. Discover your opportunities.</p>
+            </div>
+            <div class="topbar-actions">
+                <button type="button" class="btn-export btn-csv" onclick="downloadReport('csv')">Export CSV</button>
+                <button type="button" class="btn-export btn-pdf" onclick="downloadReport('pdf')">Download PDF</button>
+                <div class="profile">TS</div>
+            </div>
+        </header>
+
+
+        <section class="welcome">
+            <h2>Welcome to TalentScope 👋</h2>
+            <p>Explore job market trends, discover in-demand skills and understand industry requirements.</p>
+        </section>
+        <!-- Interactive Filter Bar -->
+        <section class="filter-bar">
+            <div class="filter-header">
+                <h3>Filter Job Market Data</h3>
+                <span id="activeFilterStatus" class="filter-badge">Showing All 830 Jobs</span>
+            </div>
+
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <label for="stateFilter">State / Location</label>
+                    <select id="stateFilter">
+                        <option value="">All States</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="skillFilter">Technical Skill</label>
+                    <select id="skillFilter">
+                        <option value="">All Skills</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="roleFilter">Job Role Keyword</label>
+                    <input type="text" id="roleFilter" placeholder="e.g. Developer, Trainee, Editor">
+                </div>
+
+                <div class="filter-group">
+                    <label for="salaryFilter">Min Monthly Salary</label>
+                    <select id="salaryFilter">
+                        <option value="">Any Salary</option>
+                        <option value="15000">₹15,000+ / month</option>
+                        <option value="25000">₹25,000+ / month</option>
+                        <option value="40000">₹40,000+ / month</option>
+                    </select>
+                </div>
+
+                <div class="filter-actions">
+                    <button type="button" id="applyFiltersBtn" class="btn-primary">Apply</button>
+                    <button type="button" id="resetFiltersBtn" class="btn-secondary">Reset</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats">
+            <div class="stat-card">
+                <p>Total Job Postings</p>
+                <h2 id="totalJobs">0</h2>
+                <small>Available job records</small>
+            </div>
+
+            <div class="stat-card">
+                <p>Technical Skills</p>
+               <h2 id="totalSkills">0</h2>
+                <small>Unique skills identified</small>
+            </div>
+
+            <div class="stat-card">
+                <p>Job Roles</p>
+                <h2 id="totalRoles">0</h2>
+                <small>Different job categories</small>
+            </div>
+
+            <div class="stat-card">
+                <p>Locations</p>
+               	<h2 id="totalLocations">0</h2>
+                <small>Hiring locations</small>
+            </div>
+        </section>
+
+        <section class="charts" id="skillsSection">
+            <div class="chart-card">
+                <h3>Top Demanded Skills</h3>
+                <canvas id="skillsChart"></canvas>
+            </div>
+
+            <div class="chart-card">
+                <h3>Job Role Distribution</h3>
+                <canvas id="rolesChart"></canvas>
+            </div>
+        </section>
+
+<section class="charts insights-section" id="rolesSection">
+
+    <div class="chart-card">
+        <h3>State-wise Job Demand</h3>
+        <p class="chart-description">
+            Top 10 states by job postings
+        </p>
+        <canvas id="stateChart"></canvas>
+    </div>
+
+    <div class="chart-card">
+        <h3>State-wise Average Monthly Salary</h3>
+        <p class="chart-description">
+            Average salary in Indian Rupees
+        </p>
+        <canvas id="salaryChart"></canvas>
+    </div>
+
+    <div class="chart-card">
+        <h3>Top 10 In-Demand Skills</h3>
+        <p class="chart-description">
+            Most frequently identified skills in job postings
+        </p>
+        <canvas id="topSkillsChart"></canvas>
+    </div>
+
+</section>
+<!-- Employment Trends Section -->
+<section class="trends-section" id="trendsSection">
+    <div class="section-header">
+        <h2>Employment Trends & Hiring Patterns</h2>
+        <p id="trendsNote">Analyzing work modes, salary distribution, and experience levels across 830 job postings.</p>
+    </div>
+
+    <div class="trend-highlights" id="trendHighlights">
+        <div class="highlight-card">
+            <span class="highlight-badge">Work Mode</span>
+            <h4 id="remoteShareText">Loading...</h4>
+            <p id="remoteShareSub">On-site vs Remote hiring split</p>
+        </div>
+        <div class="highlight-card">
+            <span class="highlight-badge">Entry-Level Hiring</span>
+            <h4 id="fresherShareText">Loading...</h4>
+            <p id="fresherShareSub">Fresher, Trainee & Intern roles</p>
+        </div>
+        <div class="highlight-card">
+            <span class="highlight-badge">Most Common Pay</span>
+            <h4 id="topBracketText">Loading...</h4>
+            <p id="topBracketSub">Dominant monthly salary range</p>
+        </div>
+    </div>
+
+    <div class="charts trends-grid">
+        <div class="chart-card">
+            <h3>Work Mode Distribution</h3>
+            <p class="chart-description">On-site vs Remote job opportunities</p>
+            <canvas id="workModeChart"></canvas>
+        </div>
+
+        <div class="chart-card">
+            <h3>Monthly Salary Brackets</h3>
+            <p class="chart-description">Distribution across INR salary slabs</p>
+            <canvas id="salaryBracketChart"></canvas>
+        </div>
+
+        <div class="chart-card">
+            <h3>Hiring by Experience Level</h3>
+            <p class="chart-description">Fresher/Trainee vs Experienced roles</p>
+            <canvas id="roleLevelChart"></canvas>
+        </div>
+    </div>
+</section>
+<!-- Advanced Data Analytics Section -->
+<section class="advanced-section" id="advancedSection">
+    <div class="section-header">
+        <h2>Advanced Job Market Analytics & Salary Insights</h2>
+        <p>Functional domain breakdown, skill-to-pay comparison, and automated data findings.</p>
+    </div>
+
+    <!-- Salary & Disclosure Metrics -->
+    <div class="salary-metrics-grid">
+        <div class="metric-box">
+            <span>Mean Monthly Salary</span>
+            <h4 id="meanSalaryVal">₹0</h4>
+            <small>Arithmetic average across disclosed roles</small>
+        </div>
+        <div class="metric-box">
+            <span>Median Monthly Salary</span>
+            <h4 id="medianSalaryVal">₹0</h4>
+            <small>50th percentile (resistant to outliers)</small>
+        </div>
+        <div class="metric-box">
+            <span>On-site vs Remote Pay</span>
+            <h4 id="modeSalaryVal">₹0 / ₹0</h4>
+            <small>Average monthly INR comparison</small>
+        </div>
+        <div class="metric-box">
+            <span>Salary Transparency</span>
+            <h4 id="disclosedRateVal">0%</h4>
+            <small id="disclosedRateSub">Disclosed vs undisclosed salaries</small>
+        </div>
+    </div>
+
+    <!-- Domain & Skill-Salary Charts -->
+    <div class="charts advanced-charts">
+        <div class="chart-card">
+            <h3>Hiring by Functional Domain</h3>
+            <p class="chart-description">Job postings grouped by domain keywords in titles</p>
+            <canvas id="domainChart"></canvas>
+        </div>
+
+        <div class="chart-card">
+            <h3>Average Monthly Salary by Skill (₹)</h3>
+            <p class="chart-description">Mean monthly pay for roles mentioning each skill</p>
+            <canvas id="skillSalaryChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Automated Analytical Insights Panel -->
+    <div class="insights-panel">
+        <h3>Key Analytical Takeaways & Skill Gap Notes</h3>
+        <ul id="automatedInsightsList">
+            <li>Loading analytical insights...</li>
+        </ul>
+    </div>
+</section>
+
+<!-- Machine Learning Prediction Section -->
+
+<section class="prediction-section" id="mlSection">
+
+    <div class="prediction-card">
+
+        <h2>AI Job Demand Prediction</h2>
+
+        <p>
+            Enter a job title to predict its demand category.
+        </p>
+
+        <div class="prediction-input">
+
+            <input
+                type="text"
+                id="jobTitleInput"
+                placeholder="Enter Job Title (e.g. Python Developer)"
+            >
+
+            <button id="predictBtn" onclick="predictDemand()">
+                Predict Demand
+            </button>
+
+        </div>
+
+        <div id="predictionResult"></div>
+
+            <!-- ML Model Evaluation & Transparency Panel -->
+        <div class="ml-evaluation-grid">
+            <div class="eval-box">
+                <h3>Model Comparison & Classification Metrics</h3>
+                <p class="chart-description" id="mlModelSubtitle">Loading model evaluation...</p>
+
+                <table class="eval-table" id="modelComparisonTable">
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Test Accuracy</th>
+                            <th>Macro F1</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+                <h4 style="margin-top: 18px; margin-bottom: 8px; font-size: 14px; color: #1e293b;">
+                    Per-Class Performance (Selected Model)
+                </h4>
+                <table class="eval-table" id="classReportTable">
+                    <thead>
+                        <tr>
+                            <th>Demand Class</th>
+                            <th>Precision</th>
+                            <th>Recall</th>
+                            <th>F1-Score</th>
+                            <th>Support</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+                <div class="ml-limitations" id="mlLimitationsBox"></div>
+            </div>
+
+            <div class="eval-box cm-box">
+                <h3>Confusion Matrix (Test Set)</h3>
+                <p class="chart-description">Actual vs. Predicted demand categories (166 test samples)</p>
+                <img
+                    src="{{ url_for('static', filename='images/confusion_matrix.png') }}"
+                    alt="Confusion Matrix"
+                    class="cm-image"
+                >
+            </div>
+        </div>
+</div>
+
+</section>
+
+<!-- Skill-Based Job Recommendation Section -->
+<section class="recommender-section" id="recommenderSection">
+    <div class="prediction-card">
+        <h2>Skill-Based Job Role Recommender</h2>
+        <p>
+            Enter your skills (comma-separated) to discover matching real job openings from the dataset,
+            along with salary info, recommendation reasons, and complementary in-demand skills.
+        </p>
+
+        <div class="skill-chips">
+            <span class="chip-label">Quick Try:</span>
+            <button type="button" class="skill-chip" onclick="fillSkillSample('Python, Data Analysis')">Python + Data Analysis</button>
+            <button type="button" class="skill-chip" onclick="fillSkillSample('HTML, CSS, JavaScript')">Web Development</button>
+            <button type="button" class="skill-chip" onclick="fillSkillSample('Teaching, Robotics')">Teaching & Robotics</button>
+            <button type="button" class="skill-chip" onclick="fillSkillSample('Java, SQL')">Java & SQL</button>
+        </div>
+
+        <div class="prediction-input">
+            <input
+                type="text"
+                id="userSkillsInput"
+                placeholder="Enter your skills (e.g. Python, Data Analysis, Teaching)"
+            >
+            <button type="button" id="recommendBtn" onclick="recommendJobs()">
+                Find Matching Roles
+            </button>
+        </div>
+
+        <div id="recommendationResults"></div>
+    </div>
+</section>
+
+        <footer>© 2026 TalentScope | Job Market Intelligence Platform</footer>
+
+    </main>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

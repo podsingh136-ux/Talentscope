@@ -1,0 +1,77 @@
+{
+  "selected_model": "TF-IDF (1-2 n-grams) + Balanced Logistic Regression",
+  "train_samples": 664,
+  "test_samples": 166,
+  "accuracy": 85.54,
+  "class_distribution": {
+    "Low Demand": 626,
+    "Medium Demand": 149,
+    "High Demand": 55
+  },
+  "model_comparison": [
+    {
+      "model": "Logistic Regression (Balanced)",
+      "accuracy": 85.54,
+      "macro_f1": 82.22
+    },
+    {
+      "model": "Multinomial Naive Bayes",
+      "accuracy": 79.52,
+      "macro_f1": 49.12
+    },
+    {
+      "model": "Random Forest (Balanced)",
+      "accuracy": 86.75,
+      "macro_f1": 82.29
+    }
+  ],
+  "per_class_metrics": {
+    "High Demand": {
+      "precision": 73.33,
+      "recall": 100.0,
+      "f1_score": 84.62,
+      "support": 11
+    },
+    "Medium Demand": {
+      "precision": 60.0,
+      "recall": 90.0,
+      "f1_score": 72.0,
+      "support": 30
+    },
+    "Low Demand": {
+      "precision": 98.11,
+      "recall": 83.2,
+      "f1_score": 90.04,
+      "support": 125
+    }
+  },
+  "confusion_matrix": {
+    "labels": [
+      "High Demand",
+      "Medium Demand",
+      "Low Demand"
+    ],
+    "matrix": [
+      [
+        11,
+        0,
+        0
+      ],
+      [
+        1,
+        27,
+        2
+      ],
+      [
+        3,
+        18,
+        104
+      ]
+    ]
+  },
+  "limitations": [
+    "Labels are derived from posting frequency within the 830-record dataset rather than longitudinal hiring forecasts.",
+    "Dataset exhibits natural class imbalance (~77% Low Demand single-posting titles), handled using class_weight='balanced'.",
+    "Because exact title strings can repeat across train and test splits, high test accuracy reflects keyword/title pattern learning rather than general macro-economic forecasting."
+  ]
+}
